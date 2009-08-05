@@ -2,7 +2,7 @@
  * SEO CakePHP Component
  * Copyright (c) 2008 Matt Curry
  * www.PseudoCoder.com
- * http://github.com/mcurry/cakephp/tree/master/components/seo
+ * http://github.com/mcurry/seo
  *
  * @author      Matt Curry <matt@pseudocoder.com>
  * @license     MIT
@@ -10,7 +10,7 @@
  */
 
 /* About */
-The intent of this component is to automatically set relevent page titles and meta descriptions
+	The intent of this component is to automatically set relevent page titles and meta descriptions
 based on the content being sent to the view.  It also assists in make pretty urls.
 
 /* Notes */
@@ -19,7 +19,7 @@ based on the content being sent to the view.  It also assists in make pretty url
 
 /* Instructions */
   1. Include the component in your app controller:
-    var $components = array('Seo');
+    var $components = array('Seo.Seo');
   
   2. The component will automatically try to pull relevant information for the title/meta description from:
     a. $Controller->data
@@ -31,11 +31,25 @@ based on the content being sent to the view.  It also assists in make pretty url
   
   5. There is also a 2nd class "Seo" which has a static function for creating pretty urls.
      Say you were making a link to view a blog post and you wanted the link to be
-     "/post/view/12/this-is-the-blog-post-title" you would create the link:
-     $html->link($post['Post']['name'], array('action' => 'view', seo::uri($post['Post'])));
+     "/posts/view/12/this-is-the-blog-post-title" you would create the link:
+     $html->link($post['Post']['name'], array('action' => 'view', Seo::slug($post['Post'])));
      The url function will automatically pull the id and title from $post and create the link.
   
   6. In your controller you can leave the view function as is "function view($id) { ... }".
      CakePHP will automatically populate the $id and ignore the extra title param.
-     
-
+		 
+	7. If you are worried about slug consitency you can use the verifySlug which will force a 301 redirect if the slug doesn't match.
+		function view($id, $slug=null) {			
+			$post = $this->Post->read(null, $id);
+			$this->Seo->verifySlug($post);			
+			$this->set('post', $post);
+		}
+	
+/* Short Urls */
+	If you need to post a link on twitter or some other service with limited characters simply remove the slug part of the link.
+	For example: "/posts/view/12/this-is-the-blog-post-title" to "/posts/view/12"
+	
+/* Even Shorter Urls */
+	Since the component works with Cake's built in routing system you can add a route like:
+	Router::connect('/p/*', array('controller' => 'posts', 'action' => 'view'));
+	All your links will be generated as: "/p/12/this-is-the-blog-post-title" and you can use "/p/12" as a short link
