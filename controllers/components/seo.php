@@ -7,7 +7,9 @@ class SeoComponent extends Object {
 	var $Controller = null;
 	static $fields = array('title' => array('name', 'title'),
 												 'description' => array('description', 'desc', 'name', 'title'));
-
+        /**
+         * @return void
+         * /
 	function initialize(&$controller) {
 		$this->Controller = $controller;
 	}
